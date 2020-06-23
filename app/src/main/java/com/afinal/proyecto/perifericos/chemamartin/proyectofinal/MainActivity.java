@@ -4,6 +4,7 @@ package com.afinal.proyecto.perifericos.chemamartin.proyectofinal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.UUID;
 
 import android.annotation.SuppressLint;
@@ -119,7 +120,12 @@ public class MainActivity extends Activity {
                     txtStringLength.setText("Tamaño del String = " + String.valueOf(dataLength));
 
                     if (dataInPrint.contains("aT")) {
-                        tempActual.setText(dataInPrint.substring(2, 4) + "." + dataInPrint.substring(4));
+                        try {
+                            String temp = String.valueOf(Integer.parseInt(dataInPrint.substring(2, 5)) / (float) 10);
+                            tempActual.setText(temp);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
                     }
                     if (dataInPrint.contains("D"))
                         ldrImageView.setImageResource(R.drawable.sun);
@@ -147,7 +153,7 @@ public class MainActivity extends Activity {
                 if (flagLocked) {
                     framePIN.setVisibility(View.VISIBLE);
                     pinEditText.requestFocus();
-
+                    pinEditText.setText(null);
                     final InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
                     imm.showSoftInput(pinEditText, 0);
                     key.setOnClickListener(new OnClickListener() {
@@ -185,11 +191,11 @@ public class MainActivity extends Activity {
                 if (flagLuz) {
                     botonBombilla.setImageResource(R.drawable.bombilla_off);
                     flagLuz = false;
-                    mConnectedThread.write("bombillaOFF");
+                    mConnectedThread.write("b0");
                 } else {
                     botonBombilla.setImageResource(R.drawable.bombilla_on);
                     flagLuz = true;
-                    mConnectedThread.write("bombillaON");
+                    mConnectedThread.write("b1");
                 }
 
 
@@ -311,8 +317,9 @@ public class MainActivity extends Activity {
 
         //write method
         public void write(String input) {
-            byte[] msgBuffer = input.getBytes();           //converts entered String into bytes
+            byte[] msgBuffer = (input + "\r\n").getBytes();           //converts entered String into bytes
             try {
+                Log.i("write", new String(msgBuffer));
                 mmOutStream.write(msgBuffer);                //write bytes over BT connection via outstream
             } catch (IOException e) {
                 //if you cannot write, close the application
