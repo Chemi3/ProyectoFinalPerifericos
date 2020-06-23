@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
     Handler bluetoothIn;
     String PIN;
     SeekBar seekBarTemp;
-    ImageView ldrImageView;
+    ImageView ldrImageView, flameView;
     EditText pinEditText;
     ImageButton key;
     FrameLayout framePIN;
@@ -87,7 +87,7 @@ public class MainActivity extends Activity {
         pinEditText = findViewById(R.id.editTextNumberPassword);
         key = findViewById(R.id.idKeyButton);
         framePIN = findViewById(R.id.idFramePIN);
-
+        flameView = findViewById(R.id.idFlame);
         seekBarTemp.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -114,28 +114,34 @@ public class MainActivity extends Activity {
                 //recDataString.append(String.valueOf( msg.what));
                 String dataInPrint = (String) msg.obj;    // extract string
 
-                if (dataInPrint.indexOf("~") > 0) {                                           // make sure there data before ~
-                    txtString.setText("Datos recibidos = " + dataInPrint);
-                    int dataLength = dataInPrint.length();       //get length of data received
-                    txtStringLength.setText("Tamaño del String = " + String.valueOf(dataLength));
-
-                    if (dataInPrint.contains("aT")) {
-                        try {
-                            String temp = String.valueOf(Integer.parseInt(dataInPrint.substring(2, 5)) / (float) 10);
-                            tempActual.setText(temp);
-                        } catch (NumberFormatException e) {
-                            e.printStackTrace();
-                        }
+                Log.i("recive", dataInPrint);
+                //if (dataInPrint.indexOf("~") > 0) {                                           // make sure there data before ~
+                txtString.setText("Datos recibidos = " + dataInPrint);
+                int dataLength = dataInPrint.length();       //get length of data received
+                txtStringLength.setText("Tamaño del String = " + String.valueOf(dataLength));
+                if (dataInPrint.contains("T")) {
+                    Log.i("atindex", String.valueOf(dataInPrint.indexOf("T")));
+                    int index = dataInPrint.indexOf("T")-1;
+                    try {
+                        String temp = String.valueOf(Integer.parseInt(dataInPrint.substring(index + 2, index + 5)) / (float) 10);
+                        tempActual.setText(temp);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
                     }
-                    if (dataInPrint.contains("D"))
-                        ldrImageView.setImageResource(R.drawable.sun);
-                    if (dataInPrint.contains("N"))
-                        ldrImageView.setImageResource(R.drawable.night);
-
-                    //recDataString.delete(0, recDataString.length());      //clear all string data
-                    // strIncom =" ";
-                    dataInPrint = " ";
                 }
+                if (dataInPrint.contains("D"))
+                    ldrImageView.setImageResource(R.drawable.sun);
+                if (dataInPrint.contains("N"))
+                    ldrImageView.setImageResource(R.drawable.night);
+                if (dataInPrint.contains("l0"))
+                    flameView.setVisibility(View.INVISIBLE);
+                if (dataInPrint.contains("l1"))
+                    flameView.setVisibility(View.INVISIBLE);
+
+                //recDataString.delete(0, recDataString.length());      //clear all string data
+                // strIncom =" ";
+                dataInPrint = " ";
+
                 //}
 
             }
