@@ -136,7 +136,7 @@ public class MainActivity extends Activity {
                 if (dataInPrint.contains("l0"))
                     flameView.setVisibility(View.INVISIBLE);
                 if (dataInPrint.contains("l1"))
-                    flameView.setVisibility(View.INVISIBLE);
+                    flameView.setVisibility(View.VISIBLE);
 
                 //recDataString.delete(0, recDataString.length());      //clear all string data
                 // strIncom =" ";

@@ -98,7 +98,7 @@
         app:layout_constraintEnd_toStartOf="@+id/imageButton2"
         app:layout_constraintHorizontal_bias="0.347"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="0dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_sendorldr"
