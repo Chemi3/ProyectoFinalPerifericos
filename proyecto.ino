@@ -2,8 +2,8 @@
 
 
 int tempControl=0;
-float tempSet = 0.0f, tempActual;
-boolean alarmStatus=true, fireStatus=false;
+float tempSet = 0.0f, tempActual = 0.0f, tempActualT;
+boolean alarmStatus=true, fireStatus=false, brokenGlassFlag = false, flagDia = true;
 String inStr = "", st="";
 
 
@@ -22,12 +22,11 @@ void setup() {
   }
   display.display();
   delay(2000);
-  
+  //displayBrokenGlass();
   display.clearDisplay();
+//display.drawRect(0,0,40,20, WHITE);
 
- //display.drawBitmap(0, 0, fuego, 18, 18, WHITE);
-  display.display();
-  delay(2000);
+
   attachInterrupt(digitalPinToInterrupt(2), interrupcionCristal, LOW);
   attachInterrupt(digitalPinToInterrupt(SensorLlamaPin), interrupcionFuego, !LOW);
   pinMode(calefacionPin, OUTPUT);
@@ -37,8 +36,10 @@ void setup() {
 }
 
 void interrupcionCristal() {
-  if (alarmStatus)
+  if (alarmStatus){
     tone(alarmaAltavozPin, 1000, 1000);
+    brokenGlassFlag = true;
+  }
 }
 void interrupcionFuego() {
     BT.print("l1~\r\n");
@@ -46,12 +47,48 @@ void interrupcionFuego() {
 	fireStatus=true;
 }
 void loop() {
-  Serial.println(BT.isListening());
-	if(fireStatus)
-		displayFuego();
+  //Serial.println(BT.isListening());
+  if (fireStatus)
+    displayFuego();
+  else if (brokenGlassFlag)
+    displayBrokenGlass();
+  else {
+    display.clearDisplay();
+    display.setTextSize(1);
+    display.setTextColor(SSD1306_WHITE);
+    display.drawBitmap(0, 0, tempActualIcon, 14, 31, WHITE);
+    display.drawCircle(51, 13, 1, WHITE);
+    display.setCursor(24, 12);
+    if (tempActual == 0.0f) {
+      display.print(F("--.- C"));
+    } else {
+      display.print(tempActual, 1);
+      display.setCursor(53, 12);
+      display.print(F("C"));
+    }
+    display.drawBitmap(0, 32, tempSetIcon, 23, 31, WHITE);
+    display.drawCircle(51, 44, 1, WHITE);
+    display.setCursor(24, 43);
+    if (tempSet == 0.0f) {
+      display.print(F("--.- C"));
+    } else {
+      display.print(tempSet, 1);
+      display.setCursor(53, 43);
+      display.print(F("C"));
+    }
+    if (flagDia)
+      display.drawBitmap(60, 0, dia, 31, 31, WHITE);
+    else
+      display.drawBitmap(60, 0, noche, 30, 31, WHITE);
+    if (alarmStatus)
+      display.drawBitmap(63, 32, alarmaON, 24, 31, WHITE);
+    else
+      display.drawBitmap(63, 32, alarmaOFF, 24, 31, WHITE);
+    display.display();
+  }
 
   inStr = BT.readString();
-  Serial.print(inStr);
+  Serial.println(inStr);
   if (inStr.indexOf("b") >= 0) {
     if ((inStr.substring(1, 2)).toInt())
       digitalWrite(bombillaReleePin, HIGH);
@@ -59,6 +96,7 @@ void loop() {
       digitalWrite(bombillaReleePin, LOW);
   } else if (inStr.indexOf("s") != -1) {
     tempSet = inStr.substring(2, 5).toFloat() / 10;
+    Serial.print("recv TempSet: ");
     Serial.println(tempSet);
   } else if (inStr.indexOf("A") != -1) {
     if ((inStr.substring(1, 2)).toInt())
@@ -69,7 +107,9 @@ void loop() {
 
   if (tempControl == 0) {
     sensors.requestTemperatures();
-    tempActual = sensors.getTempCByIndex(0);
+    tempActualT = sensors.getTempCByIndex(0);
+    if (tempActualT > 10.0f)
+      tempActual = tempActualT;
     st = " T" + String((int)(tempActual * 10)) + "~\r\n";
     BT.print(st);
     BT.println();
@@ -78,13 +118,15 @@ void loop() {
   if (analogRead(LDRAnalogPin) < 500) {
     BT.print("D~\r\n");
     BT.println();
+    flagDia = true;
   } else {
     BT.print("N~\r\n");
     BT.println();
+    flagDia = false;
   }
   if (tempSet != 0.0f) {
     //Serial.println("setTemp: " + String(tempSet));
-    if (tempActual < tempSet) 
+    if (tempActual < tempSet)
       digitalWrite(calefacionPin, HIGH);
     else
       digitalWrite(calefacionPin, LOW);
@@ -92,12 +134,12 @@ void loop() {
   if (digitalRead(PIRsensorPin) && alarmStatus) {
     tone(alarmaAltavozPin, 1000, 1000);
   }
-  if(!digitalRead(SensorLlamaPin)&&!tempControl){
+  if (!digitalRead(SensorLlamaPin) && !tempControl) {
     BT.print("l0~\r\n");
     BT.println();
   }
-  
-  
+
+
 }
 void displayFuego() {
 
@@ -114,6 +156,14 @@ void displayFuego() {
 	display.clearDisplay();
 	display.display();
 	fireStatus=false;
+}
+
+void displayBrokenGlass(){
+  display.clearDisplay();
+  display.drawBitmap(31, 0, brokenGlass, 65, 64, WHITE);
+  display.display();
+  delay(5000);
+  brokenGlassFlag=false;
 }
 
 //tSet tActual icoLuz icoAlarma icoBombilla

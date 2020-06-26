@@ -10,8 +10,8 @@
 
     <FrameLayout
         android:id="@+id/idFramePIN"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="#FFFFFF"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -28,6 +28,7 @@
                 android:id="@+id/editTextNumberPassword"
                 android:layout_width="324dp"
                 android:layout_height="85dp"
+                android:layout_marginStart="4dp"
                 android:ems="10"
                 android:hint="PIN"
                 android:inputType="numberPassword"
@@ -37,7 +38,8 @@
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.179" />
 
             <ImageButton
                 android:id="@+id/idKeyButton"
@@ -48,8 +50,10 @@
                 android:src="@drawable/key"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.542"
                 app:layout_constraintStart_toEndOf="@+id/editTextNumberPassword"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.194" />
 
         </android.support.constraint.ConstraintLayout>
 

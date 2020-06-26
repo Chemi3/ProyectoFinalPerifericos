@@ -197,11 +197,11 @@ public class MainActivity extends Activity {
                 if (flagLuz) {
                     botonBombilla.setImageResource(R.drawable.bombilla_off);
                     flagLuz = false;
-                    mConnectedThread.write("b0");
+                    mConnectedThread.write("b0\n");
                 } else {
                     botonBombilla.setImageResource(R.drawable.bombilla_on);
                     flagLuz = true;
-                    mConnectedThread.write("b1");
+                    mConnectedThread.write("b1\n");
                 }
 
 
