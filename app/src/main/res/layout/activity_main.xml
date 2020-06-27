@@ -88,6 +88,7 @@
         android:id="@+id/imageButton2"
         android:layout_width="133dp"
         android:layout_height="128dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="40dp"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
@@ -110,6 +111,7 @@
         android:id="@+id/imageView2"
         android:layout_width="133dp"
         android:layout_height="129dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/night"
         app:layout_constraintEnd_toStartOf="@+id/imageButton2"
         app:layout_constraintHorizontal_bias="0.347"
@@ -145,9 +147,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="Temperatura Actual"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tempActualID"
+            app:layout_constraintTop_toBottomOf="@+id/seekBar" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/temperature_set"
+            app:layout_constraintEnd_toStartOf="@+id/seekBar"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <SeekBar
             android:id="@+id/seekBar"
-            android:layout_width="0dp"
+            android:layout_width="350dp"
             android:layout_height="28dp"
             android:indeterminate="false"
             android:max="300"
@@ -155,28 +177,31 @@
             android:progress="150"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tempSetID"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tempSetID"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="--.-"
             android:textSize="24sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tempActualID"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tempActualID"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:text="--.-"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/seekBar" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

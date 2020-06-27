@@ -62,7 +62,7 @@ public class MainActivity extends Activity {
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private StringBuilder recDataString = new StringBuilder();
-
+    private boolean flagNocheBotonControl = false;
     private ConnectedThread mConnectedThread;
 
     // SPP UUID service - this should work for most devices
@@ -133,10 +133,20 @@ public class MainActivity extends Activity {
                         e.printStackTrace();
                     }
                 }
-                if (dataInPrint.contains("D"))
+                if (dataInPrint.contains("D")) {
                     ldrImageView.setImageResource(R.drawable.sun);
-                if (dataInPrint.contains("N"))
+                    flagNocheBotonControl=false;
+                }
+                if (dataInPrint.contains("N")) {
                     ldrImageView.setImageResource(R.drawable.night);
+
+                    if(!flagNocheBotonControl){
+                        botonBombilla.setImageResource(R.drawable.bombilla_on);
+                        flagLuz = true;
+                        mConnectedThread.write("b1");
+                    }
+
+                }
                 if (dataInPrint.contains("l0"))
                     flameView.setVisibility(View.INVISIBLE);
                 if (dataInPrint.contains("l1"))
@@ -209,6 +219,7 @@ public class MainActivity extends Activity {
         botonBombilla.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                flagNocheBotonControl= true;
                 if (flagLuz) {
                     botonBombilla.setImageResource(R.drawable.bombilla_off);
                     flagLuz = false;
@@ -216,7 +227,7 @@ public class MainActivity extends Activity {
                 } else {
                     botonBombilla.setImageResource(R.drawable.bombilla_on);
                     flagLuz = true;
-                    mConnectedThread.write("c1");
+                    mConnectedThread.write("b1");
                 }
 
 
@@ -258,6 +269,7 @@ public class MainActivity extends Activity {
             btSocket.connect();
         } catch (IOException e) {
             try {
+                mConnectedThread.write("y");
                 btSocket.close();
             } catch (IOException e2) {
                 //insert code to deal with this
@@ -338,7 +350,7 @@ public class MainActivity extends Activity {
 
         //write method
         public void write(String input) {
-            byte[] msgBuffer = (input + "\r\n").getBytes();           //converts entered String into bytes
+            byte[] msgBuffer = (input + "\0\r\n").getBytes();           //converts entered String into bytes
             try {
                 Log.i("write", new String(msgBuffer));
                 mmOutStream.flush();
@@ -350,6 +362,13 @@ public class MainActivity extends Activity {
 
             }
         }
+    }
+
+    @Override
+    public void finish() {
+        mConnectedThread.write("y");
+        super.finish();
+
     }
 }
 
