@@ -3,7 +3,7 @@
 
 int tempControl=0;
 float tempSet = 0.0f, tempActual = 0.0f, tempActualT;
-boolean alarmStatus=true, fireStatus=false, brokenGlassFlag = false, flagDia = true;
+boolean alarmStatus=true, fireStatus=false, brokenGlassFlag = false, flagDia = true, bluetoothFlag = false, bombillaFlag = false;
 String inStr = "", st="";
 
 
@@ -84,25 +84,36 @@ void loop() {
       display.drawBitmap(63, 32, alarmaON, 24, 31, WHITE);
     else
       display.drawBitmap(63, 32, alarmaOFF, 24, 31, WHITE);
+    if (bluetoothFlag)
+      display.drawBitmap(96, 0, bluetoothON, 28, 31, WHITE);
+    else
+      display.drawBitmap(98, 0, bluetoothOFF, 25, 31, WHITE);
+    if (bombillaFlag)
+      display.drawBitmap(95, 32, bombillaON, 31, 31, WHITE);
+    else
+      display.drawBitmap(95, 32, bombillaOFF, 31, 31, WHITE);
+
     display.display();
   }
 
-  inStr = BT.readString();
-  Serial.println(inStr);
-  if (inStr.indexOf("b") >= 0) {
-    if ((inStr.substring(1, 2)).toInt())
-      digitalWrite(bombillaReleePin, HIGH);
-    else
-      digitalWrite(bombillaReleePin, LOW);
-  } else if (inStr.indexOf("s") != -1) {
-    tempSet = inStr.substring(2, 5).toFloat() / 10;
-    Serial.print("recv TempSet: ");
-    Serial.println(tempSet);
-  } else if (inStr.indexOf("A") != -1) {
-    if ((inStr.substring(1, 2)).toInt())
-      alarmStatus = true;
-    else
-      alarmStatus = false;
+  if (BT.available()) {
+    inStr = BT.readString();
+    Serial.println(inStr);
+    if (inStr.indexOf("b") >= 0) {
+      if ((inStr.substring(1, 2)).toInt())
+        digitalWrite(bombillaReleePin, HIGH);
+      else
+        digitalWrite(bombillaReleePin, LOW);
+    } else if (inStr.indexOf("s") != -1) {
+      tempSet = inStr.substring(2, 5).toFloat() / 10;
+      Serial.print(F("recv TempSet: "));
+      Serial.println(tempSet);
+    } else if (inStr.indexOf("A") != -1) {
+      if ((inStr.substring(1, 2)).toInt())
+        alarmStatus = true;
+      else
+        alarmStatus = false;
+    }
   }
 
   if (tempControl == 0) {

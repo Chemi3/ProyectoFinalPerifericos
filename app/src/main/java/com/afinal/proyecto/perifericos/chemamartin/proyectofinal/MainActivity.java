@@ -19,6 +19,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -55,6 +56,7 @@ public class MainActivity extends Activity {
     ImageView ldrImageView, flameView;
     EditText pinEditText;
     ImageButton key;
+    ConstraintLayout tempLayout;
     FrameLayout framePIN;
     final int handlerState = 0;             //used to identify handler message
     private BluetoothAdapter btAdapter = null;
@@ -88,6 +90,8 @@ public class MainActivity extends Activity {
         key = findViewById(R.id.idKeyButton);
         framePIN = findViewById(R.id.idFramePIN);
         flameView = findViewById(R.id.idFlame);
+        tempLayout = findViewById(R.id.constraintLayout);
+
         seekBarTemp.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -158,6 +162,12 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 if (flagLocked) {
                     framePIN.setVisibility(View.VISIBLE);
+                    ldrImageView.setVisibility(View.INVISIBLE);
+                    flameView.setVisibility(View.INVISIBLE);
+                    botonBombilla.setVisibility(View.INVISIBLE);
+                    imageButtonStatusAlarm.setVisibility(View.INVISIBLE);
+                    seekBarTemp.setVisibility(View.INVISIBLE);
+                    tempLayout.setVisibility(View.INVISIBLE);
                     pinEditText.requestFocus();
                     pinEditText.setText(null);
                     final InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
@@ -168,7 +178,12 @@ public class MainActivity extends Activity {
                             PIN = String.valueOf(pinEditText.getText());
                             framePIN.setVisibility(View.INVISIBLE);
                             imm.toggleSoftInput(InputMethodManager.RESULT_HIDDEN, 0);
+                            ldrImageView.setVisibility(View.VISIBLE);
 
+                            botonBombilla.setVisibility(View.VISIBLE);
+                            imageButtonStatusAlarm.setVisibility(View.VISIBLE);
+                            seekBarTemp.setVisibility(View.VISIBLE);
+                            tempLayout.setVisibility(View.VISIBLE);
                             if (PIN != null) {
                                 if (PIN.equals(pin_desbloquear)) {
                                     Toast.makeText(getBaseContext(), "PIN Correcto", Toast.LENGTH_SHORT).show();
@@ -197,11 +212,11 @@ public class MainActivity extends Activity {
                 if (flagLuz) {
                     botonBombilla.setImageResource(R.drawable.bombilla_off);
                     flagLuz = false;
-                    mConnectedThread.write("b0\n");
+                    mConnectedThread.write("b0");
                 } else {
                     botonBombilla.setImageResource(R.drawable.bombilla_on);
                     flagLuz = true;
-                    mConnectedThread.write("b1\n");
+                    mConnectedThread.write("c1");
                 }
 
 
@@ -326,6 +341,7 @@ public class MainActivity extends Activity {
             byte[] msgBuffer = (input + "\r\n").getBytes();           //converts entered String into bytes
             try {
                 Log.i("write", new String(msgBuffer));
+                mmOutStream.flush();
                 mmOutStream.write(msgBuffer);                //write bytes over BT connection via outstream
             } catch (IOException e) {
                 //if you cannot write, close the application
