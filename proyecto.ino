@@ -114,6 +114,7 @@ void loop() {
   if (BT.available()) {
     inStr = BT.readString();
     if (inStr != NULL) {
+      bluetoothFlag = true;
       Serial.println(inStr);
       if (inStr.indexOf("b1") >= 0) {
         digitalWrite(bombillaReleePin, HIGH);

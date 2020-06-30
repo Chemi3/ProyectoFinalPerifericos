@@ -50,7 +50,7 @@ public class DeviceListActivity extends Activity {
         textView1.setText(" ");
 
         // Initialize array adapter for paired devices
-        ArrayAdapter mPairedDevicesArrayAdapter = new ArrayAdapter(this, R.layout.device_name);
+        ArrayAdapter<String> mPairedDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = findViewById(R.id.paired_devices);
