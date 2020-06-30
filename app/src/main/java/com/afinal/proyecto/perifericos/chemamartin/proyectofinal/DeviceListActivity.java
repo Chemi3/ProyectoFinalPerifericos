@@ -1,6 +1,6 @@
 package com.afinal.proyecto.perifericos.chemamartin.proyectofinal;
 
-import java.util.Set;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,22 +9,21 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+
+import java.util.Set;
 
 
 public class DeviceListActivity extends Activity {
     // Debugging for LOGCAT
     private static final String TAG = "DeviceListActivity";
-    private static final boolean D = true;
 
 
     // declare button for launching website and textview for connection status
-    Button tlbutton;
     TextView textView1;
 
     // EXTRA string to send on to mainactivity
@@ -32,7 +31,6 @@ public class DeviceListActivity extends Activity {
 
     // Member fields
     private BluetoothAdapter mBtAdapter;
-    private ArrayAdapter mPairedDevicesArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +45,15 @@ public class DeviceListActivity extends Activity {
         //***************
         checkBTState();
 
-        textView1 = (TextView) findViewById(R.id.connecting);
+        textView1 = findViewById(R.id.connecting);
         textView1.setTextSize(40);
         textView1.setText(" ");
 
         // Initialize array adapter for paired devices
-        mPairedDevicesArrayAdapter = new ArrayAdapter(this, R.layout.device_name);
+        ArrayAdapter mPairedDevicesArrayAdapter = new ArrayAdapter(this, R.layout.device_name);
 
         // Find and set up the ListView for paired devices
-        ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
+        ListView pairedListView = findViewById(R.id.paired_devices);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(mDeviceClickListener);
 
@@ -79,6 +77,7 @@ public class DeviceListActivity extends Activity {
 
     // Set up on-click listener for the list (nicked this - unsure)
     private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
+        @SuppressLint("SetTextI18n")
         public void onItemClick(AdapterView av, View v, int arg2, long arg3) {
 
             textView1.setText("Conectando...");

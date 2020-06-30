@@ -134,10 +134,23 @@ public class MainActivity extends Activity {
                     }
 
                 }
-                if (dataInPrint.contains("l0"))
+                if (dataInPrint.contains("l0")) {
                     flameView.setVisibility(View.INVISIBLE);
-                if (dataInPrint.contains("l1"))
+                    ldrImageView.setVisibility(View.VISIBLE);
+                    botonBombilla.setVisibility(View.VISIBLE);
+                    imageButtonStatusAlarm.setVisibility(View.VISIBLE);
+                    seekBarTemp.setVisibility(View.VISIBLE);
+                    tempLayout.setVisibility(View.VISIBLE);
+                }
+                if (dataInPrint.contains("l1")) {
                     flameView.setVisibility(View.VISIBLE);
+                    ldrImageView.setVisibility(View.INVISIBLE);
+                    botonBombilla.setVisibility(View.INVISIBLE);
+                    imageButtonStatusAlarm.setVisibility(View.INVISIBLE);
+                    seekBarTemp.setVisibility(View.INVISIBLE);
+                    tempLayout.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getBaseContext(), "LLAMANDO A LOS BOMBEROS", Toast.LENGTH_LONG).show();
+                }
 
                 //recDataString.delete(0, recDataString.length());      //clear all string data
                 // strIncom =" ";
@@ -176,7 +189,6 @@ public class MainActivity extends Activity {
                             framePIN.setVisibility(View.INVISIBLE);
                             imm.toggleSoftInput(InputMethodManager.RESULT_HIDDEN, 0);
                             ldrImageView.setVisibility(View.VISIBLE);
-
                             botonBombilla.setVisibility(View.VISIBLE);
                             imageButtonStatusAlarm.setVisibility(View.VISIBLE);
                             seekBarTemp.setVisibility(View.VISIBLE);
