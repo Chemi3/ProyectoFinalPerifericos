@@ -48,7 +48,6 @@ void interrupcionFuego() {
   fireStatus = true;
 }
 void loop() {
-  Serial.println(digitalRead(12));
   if (fireStatus)
     displayFuego();
   else if (brokenGlassFlag)
@@ -109,6 +108,9 @@ void loop() {
 
     display.display();
   }
+  if(!digitalRead(12))
+    bluetoothFlag=false;
+    
   if (BT.available()) {
     inStr = BT.readString();
     if (inStr != NULL) {

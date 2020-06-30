@@ -122,7 +122,7 @@ public class MainActivity extends Activity {
                 //if (dataInPrint.indexOf("~") > 0) {                                           // make sure there data before ~
                 txtString.setText("Datos recibidos = " + dataInPrint);
                 int dataLength = dataInPrint.length();       //get length of data received
-                txtStringLength.setText("Tamaño del String = " + String.valueOf(dataLength));
+                txtStringLength.setText("Tamaño del String = " + dataLength);
                 if (dataInPrint.contains("T")) {
                     Log.i("atindex", String.valueOf(dataInPrint.indexOf("T")));
                     int index = dataInPrint.indexOf("T")-1;
@@ -154,7 +154,6 @@ public class MainActivity extends Activity {
 
                 //recDataString.delete(0, recDataString.length());      //clear all string data
                 // strIncom =" ";
-                dataInPrint = " ";
 
                 //}
 
@@ -181,6 +180,7 @@ public class MainActivity extends Activity {
                     pinEditText.requestFocus();
                     pinEditText.setText(null);
                     final InputMethodManager imm = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
+                    assert imm != null;
                     imm.showSoftInput(pinEditText, 0);
                     key.setOnClickListener(new OnClickListener() {
                         @Override
