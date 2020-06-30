@@ -1,44 +1,32 @@
 package com.afinal.proyecto.perifericos.chemamartin.proyectofinal;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.UUID;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.UUID;
 
 
 public class MainActivity extends Activity {
@@ -61,7 +49,6 @@ public class MainActivity extends Activity {
     final int handlerState = 0;             //used to identify handler message
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
-    private StringBuilder recDataString = new StringBuilder();
     private boolean flagNocheBotonControl = false;
     private ConnectedThread mConnectedThread;
 
@@ -77,11 +64,11 @@ public class MainActivity extends Activity {
 
         //Link the buttons and textViews to respective views
 
-        txtString = (TextView) findViewById(R.id.txtString);
-        txtStringLength = (TextView) findViewById(R.id.testView1);
+        txtString = findViewById(R.id.txtString);
+        txtStringLength =  findViewById(R.id.testView1);
         ldrImageView = findViewById(R.id.imageView2);
         botonBombilla = findViewById(R.id.imageButton2);
-        txtSendorLDR = (TextView) findViewById(R.id.tv_sendorldr);
+        txtSendorLDR = findViewById(R.id.tv_sendorldr);
         imageButtonStatusAlarm = findViewById(R.id.imageView);
         seekBarTemp = findViewById(R.id.seekBar);
         tempSet = findViewById(R.id.tempSetID);
@@ -298,8 +285,7 @@ public class MainActivity extends Activity {
         if (btAdapter == null) {
             Toast.makeText(getBaseContext(), "El dispositivo no soporta bluetooth", Toast.LENGTH_LONG).show();
         } else {
-            if (btAdapter.isEnabled()) {
-            } else {
+            if (!btAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, 1);
             }
@@ -320,7 +306,7 @@ public class MainActivity extends Activity {
                 //Create I/O streams for connection
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
 
             mmInStream = tmpIn;
