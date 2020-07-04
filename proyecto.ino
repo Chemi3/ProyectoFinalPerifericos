@@ -43,8 +43,10 @@ void interrupcionCristal() {
   }
 }
 void interrupcionFuego() {
-  BT.print("l1~\r\n");
-  BT.println();
+  if (BT.available()) {
+    BT.print("l1~\r\n");
+    BT.println();
+  }
   fireStatus = true;
 }
 void loop() {
@@ -59,9 +61,9 @@ void loop() {
     //display.drawBitmap(0, 0, tempActualIcon, 14, 31, WHITE);
     display.drawCircle(51, 13, 1, WHITE);
     display.setCursor(24, 12);
-    if (tempActual == 0.0f) {
+    if (tempActual == 0.0f) 
       display.print(F("--.- C"));
-    } else {
+    else {
       display.print(tempActual, 1);
       display.setCursor(53, 12);
       display.print(F("C"));
@@ -69,27 +71,30 @@ void loop() {
     display.drawBitmap(0, 32, tempSetIcon, 23, 31, WHITE);
     display.drawCircle(51, 44, 1, WHITE);
     display.setCursor(24, 43);
-    if (tempSet == 0.0f) {
+    if (tempSet == 0.0f) 
       display.print(F("--.- C"));
-    } else {
+    else {
       display.print(tempSet, 1);
       display.setCursor(53, 43);
       display.print(F("C"));
     }
+
     if (flagDia)
       display.drawBitmap(60, 0, dia, 31, 31, WHITE);
     else
       display.drawBitmap(60, 0, noche, 30, 31, WHITE);
+
     if (alarmStatus)
       display.drawBitmap(63, 32, alarmaON, 24, 31, WHITE);
     else
       display.drawBitmap(63, 32, alarmaOFF, 24, 31, WHITE);
+
     if (bluetoothFlag)
       display.drawBitmap(96, 0, bluetoothON, 28, 31, WHITE);
-    else{
+    else
       if(tempControl)
         display.drawBitmap(98, 0, bluetoothOFF, 25, 31, WHITE);
-    }
+
     if(heatingFlag){
       if(tempControl<2)
         display.drawBitmap(0, 0, tempActualIcon, 14, 31, WHITE);
@@ -101,6 +106,7 @@ void loop() {
         display.drawBitmap(0, 0, tempActualIcon3, 14, 31, WHITE);
     }else
       display.drawBitmap(0, 0, tempActualIcon, 14, 31, WHITE);
+      
     if (bombillaFlag)
       display.drawBitmap(95, 32, bombillaON, 31, 31, WHITE);
     else

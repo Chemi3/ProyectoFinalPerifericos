@@ -46,13 +46,13 @@ public class MainActivity extends Activity {
     ImageButton key;
     ConstraintLayout tempLayout;
     FrameLayout framePIN;
-    final int handlerState = 0;             //used to identify handler message
+    final int handlerState = 0;
     private BluetoothAdapter btAdapter = null;
     private BluetoothSocket btSocket = null;
     private boolean flagNocheBotonControl = false;
     private ConnectedThread mConnectedThread;
 
-    // SPP UUID service - this should work for most devices
+    // SPP UUID service
     private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     @SuppressLint("HandlerLeak")
@@ -61,8 +61,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        //Link the buttons and textViews to respective views
 
         txtString = findViewById(R.id.txtString);
         txtStringLength =  findViewById(R.id.testView1);
@@ -83,14 +81,10 @@ public class MainActivity extends Activity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 tempSet.setText(String.valueOf(seekBar.getProgress() / (float) 10));
-
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mConnectedThread.write("sT" + seekBar.getProgress());
@@ -99,17 +93,9 @@ public class MainActivity extends Activity {
         bluetoothIn = new Handler() {
             @SuppressLint("SetTextI18n")
             public void handleMessage(android.os.Message msg) {
-                // if (msg.what == handlerState) {          //if message is what we want
-
-                // msg.arg1 = bytes from connect thread
-                //recDataString.append(String.valueOf( msg.what));
                 String dataInPrint = (String) msg.obj;    // extract string
-
                 Log.i("recive", dataInPrint);
-                //if (dataInPrint.indexOf("~") > 0) {                                           // make sure there data before ~
                 txtString.setText("Datos recibidos = " + dataInPrint);
-                int dataLength = dataInPrint.length();       //get length of data received
-                txtStringLength.setText("Tamaño del String = " + dataLength);
                 if (dataInPrint.contains("T")) {
                     Log.i("atindex", String.valueOf(dataInPrint.indexOf("T")));
                     int index = dataInPrint.indexOf("T")-1;
@@ -126,13 +112,11 @@ public class MainActivity extends Activity {
                 }
                 if (dataInPrint.contains("N")) {
                     ldrImageView.setImageResource(R.drawable.night);
-
                     if(!flagNocheBotonControl){
                         botonBombilla.setImageResource(R.drawable.bombilla_on);
                         flagLuz = true;
                         mConnectedThread.write("b1");
                     }
-
                 }
                 if (dataInPrint.contains("l0")) {
                     flameView.setVisibility(View.INVISIBLE);
@@ -151,21 +135,11 @@ public class MainActivity extends Activity {
                     tempLayout.setVisibility(View.INVISIBLE);
                     Toast.makeText(getBaseContext(), "LLAMANDO A LOS BOMBEROS", Toast.LENGTH_LONG).show();
                 }
-
-                //recDataString.delete(0, recDataString.length());      //clear all string data
-                // strIncom =" ";
-
-                //}
-
             }
         };
-
         bluetoothIn.removeCallbacksAndMessages(null);
-
         btAdapter = BluetoothAdapter.getDefaultAdapter();       // get Bluetooth adapter
         checkBTState();
-
-
         imageButtonStatusAlarm.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,7 +180,6 @@ public class MainActivity extends Activity {
                             }
                         }
                     });
-
                 } else {
                     flagLocked = true;
                     mConnectedThread.write("A1");
@@ -228,8 +201,6 @@ public class MainActivity extends Activity {
                     flagLuz = true;
                     mConnectedThread.write("b1");
                 }
-
-
             }
         });
 
@@ -237,63 +208,39 @@ public class MainActivity extends Activity {
 
 
     private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
-
         return device.createRfcommSocketToServiceRecord(BTMODULEUUID);
-        //creates secure outgoing connecetion with BT device using UUID
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        //Get MAC address from DeviceListActivity via intent
         Intent intent = getIntent();
-
-        //Get the MAC address from the DeviceListActivty via EXTRA
-        // String for MAC address
         String address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-        if (address == null)
-            address = "00:14:01:03:55:D9";
-        //create device and set the MAC address
         Log.i("ramiro", "adress : " + address);
         BluetoothDevice device = btAdapter.getRemoteDevice(address);
-
         try {
             btSocket = createBluetoothSocket(device);
         } catch (IOException e) {
             Toast.makeText(getBaseContext(), "La creacción del Socket fallo", Toast.LENGTH_LONG).show();
         }
-        // Establish the Bluetooth socket connection.
         try {
             btSocket.connect();
         } catch (IOException e) {
             try {
                 mConnectedThread.write("y");
                 btSocket.close();
-            } catch (IOException e2) {
-                //insert code to deal with this
+            } catch (IOException ignored) {
             }
         }
         if (mConnectedThread == null) {
             mConnectedThread = new ConnectedThread(btSocket);
             mConnectedThread.start();
         }
-
-
-        //I send a character when resuming.beginning transmission to check device is connected
-        //If it is not an exception will be thrown in the write method and finish() will be called
         mConnectedThread.write("x");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
     }
 
     //Checks that the Android device Bluetooth is available and prompts to be turned on if off
     private void checkBTState() {
-
         if (btAdapter == null) {
             Toast.makeText(getBaseContext(), "El dispositivo no soporta bluetooth", Toast.LENGTH_LONG).show();
         } else {
@@ -304,38 +251,31 @@ public class MainActivity extends Activity {
         }
     }
 
-    //create new class for connect thread
     private class ConnectedThread extends Thread {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        //creation of the connect thread
         public ConnectedThread(BluetoothSocket socket) {
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
             try {
-                //Create I/O streams for connection
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException ignored) {
             }
-
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
         }
-
 
         public void run() {
             byte[] buffer = new byte[256];
             int bytes;
 
-            // Keep looping to listen for received messages
             while (true) {
                 try {
-                    bytes = mmInStream.read(buffer);         //read bytes from input buffer
+                    bytes = mmInStream.read(buffer);
                     String readMessage = new String(buffer, 0, bytes);
-                    // Send the obtained bytes to the UI Activity via handler
                     bluetoothIn.removeCallbacksAndMessages(null);
                     if (readMessage.length() > 1)
                         if (!(bluetoothIn.sendMessage(bluetoothIn.obtainMessage(handlerState, bytes, -1, readMessage))))
@@ -346,18 +286,15 @@ public class MainActivity extends Activity {
             }
         }
 
-        //write method
         public void write(String input) {
-            byte[] msgBuffer = (input + "\0\r\n").getBytes();           //converts entered String into bytes
+            byte[] msgBuffer = (input + "\0\r\n").getBytes();
             try {
                 Log.i("write", new String(msgBuffer));
                 mmOutStream.flush();
-                mmOutStream.write(msgBuffer);                //write bytes over BT connection via outstream
+                mmOutStream.write(msgBuffer);
             } catch (IOException e) {
-                //if you cannot write, close the application
                 Toast.makeText(getBaseContext(), "La Conexión fallo", Toast.LENGTH_LONG).show();
                 finish();
-
             }
         }
     }
@@ -366,7 +303,6 @@ public class MainActivity extends Activity {
     public void finish() {
         mConnectedThread.write("y");
         super.finish();
-
     }
 }
 
