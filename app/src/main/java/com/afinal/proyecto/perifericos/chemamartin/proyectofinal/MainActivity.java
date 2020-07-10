@@ -102,7 +102,7 @@ public class MainActivity extends Activity {
                     try {
                         String temp = String.valueOf(Integer.parseInt(dataInPrint.substring(index + 2, index + 5)) / (float) 10);
                         tempActual.setText(temp);
-                    } catch (NumberFormatException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -114,8 +114,9 @@ public class MainActivity extends Activity {
                     ldrImageView.setImageResource(R.drawable.night);
                     if(!flagNocheBotonControl){
                         botonBombilla.setImageResource(R.drawable.bombilla_on);
+                        if(!flagLuz)
+                            mConnectedThread.write("b1");
                         flagLuz = true;
-                        mConnectedThread.write("b1");
                     }
                 }
                 if (dataInPrint.contains("l0")) {
@@ -227,7 +228,7 @@ public class MainActivity extends Activity {
             btSocket.connect();
         } catch (IOException e) {
             try {
-                mConnectedThread.write("y");
+                //mConnectedThread.write("y");
                 btSocket.close();
             } catch (IOException ignored) {
             }
