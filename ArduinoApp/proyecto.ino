@@ -1,13 +1,11 @@
 //#include "poyectoLib.h"
 
-
 int tempControl = 0;
 float tempSet = 0.0f, tempActual = 0.0f, tempActualT;
 boolean alarmStatus = true, fireStatus = false, brokenGlassFlag = false, flagDia = true, bluetoothFlag = false, bombillaFlag = false, heatingFlag = false;
 String inStr = "", st = "";
 
-
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, & Wire, OLED_RESET);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 SoftwareSerial BT(10, 11);
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors( & oneWire);
@@ -21,11 +19,8 @@ void setup() {
     Serial.println("SSD1306 allocation failed");
   }
   display.display();
-  delay(2000);
-  //displayBrokenGlass();
+  delay(1000);
   display.clearDisplay();
-  //display.drawRect(0,0,40,20, WHITE);
-
 
   attachInterrupt(digitalPinToInterrupt(2), interrupcionCristal, LOW);
   attachInterrupt(digitalPinToInterrupt(SensorLlamaPin), interrupcionFuego, !LOW);
@@ -33,7 +28,6 @@ void setup() {
   pinMode(bombillaReleePin, OUTPUT);
   pinMode(PIRsensorPin, INPUT);
   pinMode(12, INPUT);
-
 }
 
 void interrupcionCristal() {
@@ -58,7 +52,6 @@ void loop() {
     display.clearDisplay();
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
-    //display.drawBitmap(0, 0, tempActualIcon, 14, 31, WHITE);
     display.drawCircle(51, 13, 1, WHITE);
     display.setCursor(24, 12);
     if (tempActual == 0.0f) 
@@ -131,11 +124,6 @@ void loop() {
       } else if (inStr.indexOf("s") != -1) {
         tempSet = inStr.substring(2, 5).toFloat() / 10;
         inStr.trim();
-        //Serial.println(inStr);
-        //Serial.print(inStr.indexOf("s"));
-        //Serial.print(inStr.substring(2, 5));
-        //Serial.print(F("<-- recv TempSet: "));
-        //Serial.println(tempSet);
       } else if (inStr.indexOf("A") != -1) {
         if ((inStr.substring(1, 2)).toInt())
           alarmStatus = true;
@@ -152,7 +140,6 @@ void loop() {
   if (!tempControl) {
     sensors.requestTemperatures();
     tempActualT = sensors.getTempCByIndex(0);
-    //Serial.println(tempActualT);
     if (tempActualT > 10.0f){
       tempActual = tempActualT;
     }
@@ -171,7 +158,6 @@ void loop() {
     flagDia = false;
   }
   if (tempSet != 0.0f) {
-    //Serial.println("setTemp: " + String(tempSet));
     if (tempActual < tempSet){
       digitalWrite(calefacionPin, HIGH);
       heatingFlag = true;
@@ -192,7 +178,6 @@ void loop() {
 
 }
 void displayFuego() {
-
   for (int i = 0; i < 5; i++) {
     display.clearDisplay();
     display.drawBitmap(30, 0, casaFire1, 69, 64, WHITE);
@@ -215,6 +200,3 @@ void displayBrokenGlass() {
   delay(5000);
   brokenGlassFlag = false;
 }
-
-//tSet tActual icoLuz icoAlarma icoBombilla
-//3fallos pin send señal arduino imprimir aviso por pantalla
